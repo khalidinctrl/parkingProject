@@ -1,0 +1,115 @@
+{
+    "parking_area": [
+        {
+            "id": "PA-0001",
+            "number of slots": "",
+            "location": ""
+        },
+        {
+            "id": "PA-0002",
+            "number of slots": "",
+            "location": ""
+        }
+    ],
+    "sections": [
+        {
+            "id": "S-0001",
+            "capacity": "",
+            "rate_per_hour": "",
+            "available_slots": "",
+            "occupied_slots": "",
+            "status": "",
+            "parking_area_id": ""
+        },
+        {
+            "id": "S-0002",
+            "capacity": "",
+            "rate_per_hour": "",
+            "available_slots": "",
+            "occupied_slots": "",
+            "status": "",
+            "parking_area_id": ""
+        }
+    ],
+    "slots": [
+        {
+            "id": "SL-0001",
+            "status": "",
+            "section_id": ""
+        },
+        {
+            "id": "SL-0002",
+            "status": "",
+            "section_id": ""
+        }
+    ],
+    "car": [],
+    "customer": [
+        {
+            "id": "CU-0001",
+            "first_name": "",
+            "last_name": ""
+        },
+        {
+            "id": "CU-0002",
+            "first_name": "",
+            "last_name": ""
+        }
+    ],
+    "parking": [
+        {
+            "id": "PK-0001",
+            "entry_time": "",
+            "exit_time": "",
+            "parking_fee": "",
+            "hours_parked": 0,
+            "date": "",
+            "slot_id": ""
+        },
+        {
+            "id": "PK-0002",
+            "entry_time": "",
+            "exit_time": "",
+            "parking_fee": "",
+            "hours_parked": 0,
+            "date": "",
+            "slot_id": ""
+        }
+    ],
+    "card": [
+        {
+            "id": "CD-0001",
+            "customer_id": "",
+            "issue_date": "",
+            "expiry_date": "",
+            "plate_no": ""
+        },
+        {
+            "id": "CD-0002",
+            "customer_id": "",
+            "issue_date": "",
+            "expiry_date": "",
+            "plate_no": ""
+        }
+    ],
+    "payment": [
+        {
+            "id": "PY-0001",
+            "status": "",
+            "date": "",
+            "amount": 0,
+            "hours": "",
+            "section": "",
+            "parking_id": "PY-0001"
+        },
+        {
+            "id": "PY-0002",
+            "status": "",
+            "date": "",
+            "amount": 0,
+            "hours": "",
+            "section": "",
+            "parking_id": "PY-0002"
+        }
+    ]
+}
