@@ -14,20 +14,10 @@
     "sections": [
         {
             "id": "S-0001",
-            "capacity": "",
-            "rate_per_hour": "",
-            "available_slots": "",
-            "occupied_slots": "",
-            "status": "",
             "parking_area_id": ""
         },
         {
             "id": "S-0002",
-            "capacity": "",
-            "rate_per_hour": "",
-            "available_slots": "",
-            "occupied_slots": "",
-            "status": "",
             "parking_area_id": ""
         }
     ],

@@ -10,9 +10,6 @@ class ParkingArea:
     def __str__(self):
         return f"number_of_slots ==> {self.number_of_slots}"
 
-    def expand_area(self):
-        pass
-
     def available_slots(self):
         pass
 
@@ -20,14 +17,10 @@ class ParkingArea:
         pass
     
 class Section:
-    def __init__(self, section_id, capacity, rate_per_hour, available_slots, occupied_slots, status, parking_area_id):
+    def __init__(self, section_id, parking_area_id):
         self.__section_id = section_id
-        self.capacity = capacity
-        self.rate_per_hour = rate_per_hour
-        self.__available_slots = available_slots
-        self.__occupied_slots = occupied_slots
-        self.status = status
         self.parking_area_id = parking_area_id
+        self.capacity = 50
 
     def get_section_id(self):
         return self.__section_id
@@ -36,7 +29,40 @@ class Section:
         return self.__available_slots
 
     def get_occupied_slots(self):
-        return self.__occupied_slots        
+        return self.__occupied_slots    
+
+class Ordinary(Section):
+    def __init__(self, section_id, parking_area_id, available_slots, occupied_slots, name = "Ordinary", capacity = 25, rate_per_hour = 5000):
+        super().__init__(section_id, parking_area_id)
+
+        self.__available_slots = available_slots
+        self.__occupied_slots = occupied_slots
+        self.name = name
+        self.capacity = capacity
+        self.rate_per_hour = rate_per_hour
+
+        def get_available_slots(self):
+            return self.__available_slots
+        
+        def get_occupied_slots(self):
+            return self.__occupied_slots
+
+class VIP(Section):
+    def __init__(self, section_id, parking_area_id, available_slots, occupied_slots, name = "VIP", capacity = 25, rate_per_hour = 10000):
+        super().__init__(section_id, parking_area_id)
+
+        self.__available_slots = available_slots
+        self.__occupied_slots = occupied_slots
+        self.name = name
+        self.capacity = capacity
+        self.rate_per_hour = rate_per_hour
+
+    def get_available_slots(self):
+            return self.__available_slots
+    
+    def get_occupied_slots(self):
+        return self.__occupied_slots
+
 
 class Slot:
     def __init__(self, slot_id, status, section_id):

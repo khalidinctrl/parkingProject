@@ -1,4 +1,4 @@
-from parking import Car, ParkingArea, Customer, Parking, Slot, Section, Payment, ParkingCard
+from parking import Car, ParkingArea, Customer, Parking, Slot, Section, Payment, ParkingCard,Ordinary,VIP
 import json
 
 #generating auto ID
@@ -91,14 +91,9 @@ def section_details():
     print("\tEntering section details.....")
     
     section_id = auto_id('S')
-    capacity = input("Enter section capacity: ")
-    rate_per_hour = input("Enter rate per hour: ")
-    available_slots = input("Enter available slots: ")
-    occupied_slots = input("Enter occupied slots: ")
-    status = input("Enter status: ")
     parking_area_id = input("Enter parking area id: ")
 
-    section = Section(section_id, capacity, rate_per_hour, available_slots, occupied_slots, status, parking_area_id)
+    section = Section(section_id, parking_area_id)
 
     # Loading the json
     with open("data.json", 'r') as f:
@@ -106,11 +101,6 @@ def section_details():
 
     new_section = {
         "id": section_id,
-        "capacity": capacity,
-        "rate_per_hour": rate_per_hour,
-        "available_slots": available_slots,
-        "occupied_slots": occupied_slots,
-        "status": status,
         "parking_area_id": parking_area_id
     }
     data["sections"].append(new_section)
