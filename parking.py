@@ -1,14 +1,53 @@
+import json
+
 class ParkingArea:
-    def __init__ (self, parking_area_id, number_of_slots, location):
-        self.__parking_area_id = parking_area_id
+    def __init__ (self, number_of_slots, location):
+        self.__parking_area_id = self.auto_id()
         self.number_of_slots = number_of_slots
         self.location = location
 
-    def get_parking_area_id(self):
-        return self.__parking_area_id   
-
     def __str__(self):
-        return f"number_of_slots ==> {self.number_of_slots}"
+        return f"number_of_slots ==> {self.number_of_slots}\n location ==> {self.location}\n id ==> {self.__parking_area_id}"
+    
+    @property
+    def parking_area_id(self):
+        return self.parking_area_id
+
+    def auto_id(self):
+        label = "PA"
+
+        with open("data.json", 'r') as f:
+            data = json.load(f)
+
+        for i in range(1, 1000):
+            gen_ID = f"{label}-{i:04d}"
+            
+            found = False
+            for item in data.get("parking_area", []):
+                if item.get("id") == gen_ID:
+                    found = True
+                    break
+            
+            if not found:
+                return gen_ID
+                
+        return None
+
+    def saving_to_json(self):
+            #loading the json
+        with open("data.json", 'r') as f:
+            data = json.load(f)    
+
+        new_parking_area = {
+            "id": self.__parking_area_id,
+            "number of slots": self.number_of_slots,
+            "location": self.location
+        }
+        data["parking_area"].append(new_parking_area)
+
+        #saving to the json
+        with open("data.json", 'w') as f:
+            json.dump(data, f, indent=4)
 
     def available_slots(self):
         pass
@@ -160,3 +199,5 @@ class Payment:
     def calculate_amount(self):
         pass
  
+t1 = ParkingArea(30, "center")
+print(t1)
