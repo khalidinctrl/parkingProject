@@ -12,7 +12,6 @@ def parking_area_details():
         
 #captures car details
 def car_details():
-    data = []
     plate_number = input("Enter plate number: ")
     brand = input("Enter brand: ")
     model = input("Enter model: ")
@@ -23,17 +22,16 @@ def car_details():
 #handling section details
 def section_details():
     print("\tEntering section details.....")
-    
-    parking_area_id = input("Enter parking area id: ")
+    parking_area_id = input("Enter parking area: ")
+    status = input("enter status: ")
 
-    section = Section(parking_area_id)
+    section = Section(parking_area_id, status)
     section.save()
         
 #handling slot details
 def slot_details():
     label = 'SL'
     print("\tEntering slot details.....")
-    data = []
     
     status = input("Enter status: ")
     section_id = input("Enter section id: ")
@@ -44,7 +42,6 @@ def slot_details():
 #handling customer details
 def customer_details():
     print("\tEntering customer details.....")
-    data = []
     
     first_name = input("Enter customer first_name: ")
     last_name = input("Enter customer last name: ")
@@ -55,7 +52,6 @@ def customer_details():
 # handling Parking card details
 def card_details():
     print("\tEntering parking card details.....")
-    data = []
 
     customer_id = input("Enter customer_id: ")     
     issue_date = input("Enter issue_date: ")
@@ -68,7 +64,6 @@ def card_details():
 #Handling Parking Details
 def parking():
     print("\tEntering Parking Details.....")
-    data = []
 
     entry_time = int(input("Enter entry_time: "))
     exit_time = int(input("Enter exit_time: "))
@@ -84,14 +79,15 @@ def parking():
 #Handling Payment details
 def payment_details():
     print("\tEntering Payment Details")
-    data = []
 
     status = input("Enter status: ")
     date = input("Enter date: ")
     hours = input("Enter hours: ")
     section = input("Enter section: ")
+    parking_id = input("Enter parking id: ")
 
-    payment = Payment(status, date, hours, section)
+    payment = Payment(status, date, hours, section, parking_id)
+    payment.save()
 
 #the first to run
 def main():

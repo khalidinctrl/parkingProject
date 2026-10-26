@@ -11,7 +11,7 @@ class ParkingArea:
     
     @property
     def parking_area_id(self):
-        return self.parking_area_id
+        return self.__parking_area_id
 
     def auto_id(self):
         label = "PA"
@@ -34,7 +34,6 @@ class ParkingArea:
         return None
 
     def save(self):
-            #loading the json
         with open("data.json", 'r') as f:
             data = json.load(f)    
 
@@ -45,20 +44,14 @@ class ParkingArea:
         }
         data["parking_area"].append(new_parking_area)
 
-        #saving to the json
         with open("data.json", 'w') as f:
-            json.dump(data, f, indent=4)
+            json.dump(data, f, indent=4)    
 
-    def available_slots(self):
-        pass
-
-    def occupied_slots(self):
-        pass
-    
 class Section:
-    def __init__(self, parking_area_id):
+    def __init__(self, parking_area_id, status):
         self.__section_id = self.auto_id()
         self.parking_area_id = parking_area_id
+        self.status = status
         self.capacity = 50
 
     def get_section_id(self):
@@ -85,25 +78,19 @@ class Section:
         return None
 
     def save(self):
-            # Loading the json
         with open("data.json", 'r') as f:
             data = json.load(f)    
 
         new_section = {
-            "id": self.auto_id(),
-            "parking_area_id": self.parking_area_id
+            "id": self.__section_id,
+            "parking_area_id": self.parking_area_id,
+            "status": self.status,
+            "capacity": self.capacity
         }
         data["sections"].append(new_section)
 
-        # Saving to the json
         with open("data.json", 'w') as f:
             json.dump(data, f, indent=4)
-
-    def get_available_slots(self):
-        return self.__available_slots
-
-    def get_occupied_slots(self):
-        return self.__occupied_slots    
 
 class Ordinary(Section):
     def __init__(self, section_id, parking_area_id, available_slots, occupied_slots, name = "Ordinary", capacity = 25, rate_per_hour = 5000):
@@ -179,6 +166,7 @@ class Slot:
         #saving to the json
         with open("data.json", 'w')as f:
             json.dump(data, f, indent = 4)
+
     def get_slot_id(self):
         return self.__slot_id
 
@@ -207,7 +195,7 @@ class Car:
             data = json.load(f)    
     
         new_vehicle = {
-            "plate_number":self.plate_number,
+            "plate_number":self.__plate_no,
             "brand":self.brand,
             "model":self.model,
         }
@@ -336,7 +324,8 @@ class ParkingCard:
 
     def get_card_id(self):
         return self.__card_id 
-
+    
+#REMEMBER TO MASK THE CARD NUMBER IN A LONG AND CARDY WAY LIKE 5376-37478-3892
     def auto_id(self):
         label = "CD"
 
@@ -437,6 +426,42 @@ class Payment:
     
     def calculate_amount(self):
         pass
- 
-t1 = ParkingArea(30, "center")
-print(t1)
+
+class CashPayment(Payment):
+    def __init__(self, status, date, hours, section, parking_id, amount_tendered):
+        super().__init__(status, date, hours, section, parking_id)
+        self.amount_tendered = amount_tendered
+        self.__change = self.calculate_change()
+
+    def calculate_change(self):
+        self.__change = self.amount_tendered - self.amount
+        return self.__change
+
+    def display_payment(self):
+        print(f"Cash payment of {self.amount}\n Change: {self.change}")
+
+
+class CardPayment(Payment):
+    def __init__(self, status, date, hours, section, parking_id,card_number,card_brand):
+        super().__init__(status, date, hours, section, parking_id)
+        self.card_number = card_number
+        self.card_brand = card_brand
+
+    def display_payment(self):
+        print(f"payment ==> {self.payment_id}\ncard type ==> {self.card_brand}\ncard number ==> {self.card_number}")
+
+class MobileMoneyPayment(Payment):
+    def __init__(self, status, date, hours, section, parking_id,phone_number,network):
+        super().__init__(status, date, hours, section, parking_id)
+        self.phone_number = phone_number
+        self.network = network
+
+    def receipt_link(self):
+        return f"https://{self.network}/{self.payment_id}"
+
+    def display_payment(self):
+        print(f"payment ==> {self.payment_id}\n network ==> {self.network}\n phone number ==> {self.phone_number}")
+
+
+t1 = MobileMoneyPayment("free",20,7,VIP,"P001","0708736822","AIRTEL")
+print(t1.receipt_link())
