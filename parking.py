@@ -48,15 +48,29 @@ class ParkingArea:
             json.dump(data, f, indent=4)    
 
 class Section:
-    def __init__(self, parking_area_id, status):
+    def __init__(self, parking_area, status, type):
         self.__section_id = self.auto_id()
-        self.parking_area_id = parking_area_id
+        self.parking_area = parking_area
         self.status = status
+        self.type = type
         self.capacity = 50
+
+    def check_available_slots(self):
+        pass
 
     def get_section_id(self):
         return self.__section_id
 
+    def check_rate(self):
+        vip = 10000
+        ordinary = 5000
+        if self.type == "vip":
+            return vip
+        elif self.type == "ordinary":
+            return ordinary
+        else:
+            return "section is vip / ordinary"
+    
     def auto_id(self):
         label = "S"
 
@@ -83,53 +97,24 @@ class Section:
 
         new_section = {
             "id": self.__section_id,
-            "parking_area_id": self.parking_area_id,
+            "parking_area": self.parking_area_id,
             "status": self.status,
+            "type": self.type,
             "capacity": self.capacity
         }
         data["sections"].append(new_section)
 
         with open("data.json", 'w') as f:
             json.dump(data, f, indent=4)
-
-class Ordinary(Section):
-    def __init__(self, section_id, parking_area_id, available_slots, occupied_slots, name = "Ordinary", capacity = 25, rate_per_hour = 5000):
-        super().__init__(section_id, parking_area_id)
-
-        self.__available_slots = available_slots
-        self.__occupied_slots = occupied_slots
-        self.name = name
-        self.capacity = capacity
-        self.rate_per_hour = rate_per_hour
-
-        def get_available_slots(self):
-            return self.__available_slots
-        
-        def get_occupied_slots(self):
-            return self.__occupied_slots
-
-class VIP(Section):
-    def __init__(self, section_id, parking_area_id, available_slots, occupied_slots, name = "VIP", capacity = 25, rate_per_hour = 10000):
-        super().__init__(section_id, parking_area_id)
-
-        self.__available_slots = available_slots
-        self.__occupied_slots = occupied_slots
-        self.name = name
-        self.capacity = capacity
-        self.rate_per_hour = rate_per_hour
-
-    def get_available_slots(self):
-            return self.__available_slots
-    
-    def get_occupied_slots(self):
-        return self.__occupied_slots
-
+            
 
 class Slot:
-    def __init__(self, status, section_id):
+    def __init__(self, status, section, parking_area, car):
         self.__slot_id = self.auto_id()
         self.status = status
-        self.section_id = section_id
+        self.section = section
+        self.parking_area = parking_area
+        self.car = car
 
     def auto_id(self):
         label = "SL"
@@ -159,7 +144,7 @@ class Slot:
         new_slot = {
             "id":self.__slot_id,
             "status":self.status,
-            "section_id":self.section_id
+            "section_id":self.section
         }
         data["slots"].append(new_slot)
     
@@ -177,10 +162,11 @@ class Slot:
         pass
 
 class Car:
-    def __init__(self, plate_no, brand, model):
+    def __init__(self, plate_no, brand, model, customer):
         self.__plate_no = plate_no
         self.brand = brand
         self.model = model
+        self.customer = customer
     
 #getter for plate number
     def get_plate_no(self):
@@ -207,10 +193,11 @@ class Car:
     
 
 class Customer:
-    def __init__(self, first_name, last_name):
+    def __init__(self, first_name, last_name, contact):
         self.__customer_id = self.auto_id()
         self.first_name = first_name
         self.last_name = last_name
+        self.contact = contact
 
     def auto_id(self):
         label = "CU"
@@ -243,7 +230,8 @@ class Customer:
         new_customer = {
             "id":self.__customer_id,
             "first_name":self.first_name,
-            "last_name":self.last_name
+            "last_name":self.last_name,
+            "contact": self.contact
         }
         data["customer"].append(new_customer)
 
@@ -253,18 +241,24 @@ class Customer:
 
         
 class Parking:
-    def __init__(self, entry_time, exit_time, parking_fee, date, slot_id, card_id):
+    def __init__(self, entry_time, exit_time, date, car, slot, card, section, parking_area):
         self.__parking_id = self.auto_id()
         self.entry_time = entry_time
         self.exit_time = exit_time
-        self.parking_fee = parking_fee
-        self.__hours_parked = 0
         self.date = date
-        self.slot_id = slot_id
-        self.card_id = card_id
+        self.car = car
+        self.slot = slot
+        self.card = card
+        self.section = section
+        self.parking_area = parking_area
+        self.__hours_parked = 0
+
 
     def get_parking_id(self):
         return self.__parking_id
+
+    def __str__(self):
+        return f"{'*'*20}\n\t TICKET \n parking area ==> {self.parking_area.location} \n section ==> \n entry time ==> {self.entry_time} \n exit time ==> {self.exit_time} \n car ==> {self.car.plate_no, self.car.brand, self.car.model} \n slot ==> {self.slot.slot_id} hours parked ==> {self.__hours}"
 
     def auto_id(self):
         label = "PK"
@@ -310,17 +304,14 @@ class Parking:
         self.__hours = self.exit_time - self.entry_time
         return self.__hours
 
-    def display_parking(self):
-        pass
-
 class ParkingCard:
-    def __init__(self, customer_id, issue_date, expiry_date, plate_no):
+    def __init__(self, issue_date, expiry_date, car, customer):
         self.__card_id = self.auto_id()
-        self.customer_id = customer_id
+        self.customer = customer
         self.__card_validity = False 
         self.issue_date = issue_date
         self.expiry_date = expiry_date
-        self.plate_no = plate_no
+        self.car = car
 
     def get_card_id(self):
         return self.__card_id 
@@ -353,10 +344,10 @@ class ParkingCard:
 
         new_parking_card = {
             "id": self.__card_id,
-            "customer_id": self.customer_id,
+            "customer_id": self.customer,
             "issue_date": self.issue_date,
             "expiry_date": self.expiry_date,
-            "plate_no":self.plate_no
+            "plate_no":self.car
         }
         data["card"].append(new_parking_card)
 
@@ -371,18 +362,18 @@ class ParkingCard:
         pass
 
 class Payment:
-    def __init__(self, status, date, hours, section, parking_id):
+    def __init__(self, date, section, parking_area, parking):
         self.payment_id = self.auto_id()
-        self.status = status
         self.date = date
-        self.__amount = 0
-        self.hours = hours
+        self.parking = parking
         self.section = section
-        self.parking_id = parking_id
+        self.parking_area = parking_area
+        self.status = "pending"
+        self._amount = 0
 
     @property
     def amount(self):
-        return self.__amount
+        return self._amount
 
     def auto_id(self):
         label = "PY"
@@ -416,7 +407,7 @@ class Payment:
             "amount": 0,
             "hours": self.hours,
             "section": self.section,
-            "parking_id": self.parking_id
+            "parking_id": self.parking_area.parking_area_id
         }
         data["payment"].append(new_payment)
 
@@ -424,44 +415,62 @@ class Payment:
         with open("data.json", 'w') as f:
             json.dump(data, f, indent = 4)       
     
-    def calculate_amount(self):
-        pass
+    def calculate_amount(self,):
+        self._amount = self.section.rate * self.__hours
 
 class CashPayment(Payment):
-    def __init__(self, status, date, hours, section, parking_id, amount_tendered):
-        super().__init__(status, date, hours, section, parking_id)
+    def __init__(self, date, hours, section, parking_area, parking, amount_tendered):
+        super().__init__(date, hours, section, parking_area, parking)
         self.amount_tendered = amount_tendered
-        self.__change = self.calculate_change()
+        self.__balance = 0
+        self.section = section
 
-    def calculate_change(self):
-        self.__change = self.amount_tendered - self.amount
-        return self.__change
+    def calculate_balance(self):
+        self.__balance = self.amount_tendered - self._amount
+        return self.__balance
+
+    def validate_payment(self):
+        valid  = False
+
+        self.calculate_amount()
+        if self.amount_tendered >= self._amount:
+            self.__balance = self.amount_tendered - self._amount
+            self.status = "paid"
+            valid = True
+        else:
+            self.status = "Insufficient cash"
+            return valid
 
     def display_payment(self):
-        print(f"Cash payment of {self.amount}\n Change: {self.change}")
+        print(f"Cash payment of {self.amount}\n Change: {self.__balance}")
 
-
-class CardPayment(Payment):
-    def __init__(self, status, date, hours, section, parking_id,card_number,card_brand):
-        super().__init__(status, date, hours, section, parking_id)
-        self.card_number = card_number
-        self.card_brand = card_brand
-
-    def display_payment(self):
-        print(f"payment ==> {self.payment_id}\ncard type ==> {self.card_brand}\ncard number ==> {self.card_number}")
 
 class MobileMoneyPayment(Payment):
-    def __init__(self, status, date, hours, section, parking_id,phone_number,network):
-        super().__init__(status, date, hours, section, parking_id)
+    def __init__(self, date, section, parking_area, parking, phone_number, network):
+        super().__init__(date, section, parking_area, parking)
         self.phone_number = phone_number
         self.network = network
 
     def receipt_link(self):
-        return f"https://{self.network}/{self.payment_id}"
+        return f"https{self.network}{self.payment_id}"
 
     def display_payment(self):
         print(f"payment ==> {self.payment_id}\n network ==> {self.network}\n phone number ==> {self.phone_number}")
 
 
-t1 = MobileMoneyPayment("free",20,7,VIP,"P001","0708736822","AIRTEL")
-print(t1.receipt_link())
+    def validate_payment(self):
+        valid  = False
+        
+        if self.phone_number.startswith('0') and len(self.phone_number) == 10:
+            body = self.phone_number[1:]
+            self.phone_number = f"+256 {body[0:3]} {body[3:6]} {body[6:]}"
+            valid = True
+            return valid
+            
+        return valid
+        
+
+m1 = MobileMoneyPayment("2000-1-1",6,"sec","p1","0700111222","airtel")
+m1.display_payment()
+print(m1.validate_payment())
+
