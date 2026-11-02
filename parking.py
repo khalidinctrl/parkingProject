@@ -1,9 +1,9 @@
 import json
 
 class ParkingArea:
-    def __init__ (self, number_of_slots, location):
+    def __init__ (self, location):
         self.__parking_area_id = self.auto_id()
-        self.number_of_slots = number_of_slots
+        self.number_of_slots = 200
         self.location = location
 
     def __str__(self):
@@ -97,7 +97,7 @@ class Section:
 
         new_section = {
             "id": self.__section_id,
-            "parking_area": self.parking_area_id,
+            "parking_area": self.parking_area.parking_area_id,
             "status": self.status,
             "type": self.type,
             "capacity": self.capacity
@@ -106,91 +106,6 @@ class Section:
 
         with open("data.json", 'w') as f:
             json.dump(data, f, indent=4)
-            
-
-class Slot:
-    def __init__(self, status, section, parking_area, car):
-        self.__slot_id = self.auto_id()
-        self.status = status
-        self.section = section
-        self.parking_area = parking_area
-        self.car = car
-
-    def auto_id(self):
-        label = "SL"
-
-        with open("data.json", 'r') as f:
-            data = json.load(f)
-
-        for i in range(1, 1000):
-            gen_ID = f"{label}-{i:04d}"
-            
-            found = False
-            for item in data.get("slots", []):
-                if item.get("id") == gen_ID:
-                    found = True
-                    break
-            
-            if not found:
-                return gen_ID
-                
-        return None
-
-    def save(self):
-        #loading the json
-        with open("data.json", 'r')as f:
-            data = json.load(f)    
-    
-        new_slot = {
-            "id":self.__slot_id,
-            "status":self.status,
-            "section_id":self.section
-        }
-        data["slots"].append(new_slot)
-    
-        #saving to the json
-        with open("data.json", 'w')as f:
-            json.dump(data, f, indent = 4)
-
-    def get_slot_id(self):
-        return self.__slot_id
-
-    def search_slot(self):
-        pass
-
-    def update_status(self):
-        pass
-
-class Car:
-    def __init__(self, plate_no, brand, model, customer):
-        self.__plate_no = plate_no
-        self.brand = brand
-        self.model = model
-        self.customer = customer
-    
-#getter for plate number
-    def get_plate_no(self):
-        return self.__plate_no
-
-    def __str__ (self):
-        return f"plate_no ==> {self.get_plate_no()} brand ==>{self.brand} model ==>{self.model}"
-
-    def save(self):
-        #loading the json
-        with open("data.json", 'r')as f:
-            data = json.load(f)    
-    
-        new_vehicle = {
-            "plate_number":self.__plate_no,
-            "brand":self.brand,
-            "model":self.model,
-        }
-        data["car"].append(new_vehicle)
-    
-        #saving to the json
-        with open("data.json", 'w')as f:
-            json.dump(data, f, indent = 4)
-    
 
 class Customer:
     def __init__(self, first_name, last_name, contact):
@@ -239,29 +154,47 @@ class Customer:
         with open("data.json", 'w')as f:
             json.dump(data, f, indent = 4)
 
-        
-class Parking:
-    def __init__(self, entry_time, exit_time, date, car, slot, card, section, parking_area):
-        self.__parking_id = self.auto_id()
-        self.entry_time = entry_time
-        self.exit_time = exit_time
-        self.date = date
-        self.car = car
-        self.slot = slot
-        self.card = card
-        self.section = section
+class Car:
+    def __init__(self, plate_no, brand, model, customer):
+        self.__plate_no = plate_no
+        self.brand = brand
+        self.model = model
+        self.customer = customer
+    
+#getter for plate number
+    def get_plate_no(self):
+        return self.__plate_no
+
+    def __str__ (self):
+        return f"plate_no ==> {self.get_plate_no()} brand ==>{self.brand} model ==>{self.model}"
+
+    def save(self):
+        #loading the json
+        with open("data.json", 'r')as f:
+            data = json.load(f)    
+    
+        new_vehicle = {
+            "plate_number":self.__plate_no,
+            "brand":self.brand,
+            "model":self.model,
+            "customer id":self.customer.get_customer_id()
+        }
+        data["car"].append(new_vehicle)
+    
+        #saving to the json
+        with open("data.json", 'w')as f:
+            json.dump(data, f, indent = 4)
+
+class Slot:
+    def __init__(self, status, parking_area, section, car):
+        self.__slot_id = self.auto_id()
+        self.status = status
         self.parking_area = parking_area
-        self.__hours_parked = 0
-
-
-    def get_parking_id(self):
-        return self.__parking_id
-
-    def __str__(self):
-        return f"{'*'*20}\n\t TICKET \n parking area ==> {self.parking_area.location} \n section ==> \n entry time ==> {self.entry_time} \n exit time ==> {self.exit_time} \n car ==> {self.car.plate_no, self.car.brand, self.car.model} \n slot ==> {self.slot.slot_id} hours parked ==> {self.__hours}"
+        self.section = section
+        self.car = car
 
     def auto_id(self):
-        label = "PK"
+        label = "SL"
 
         with open("data.json", 'r') as f:
             data = json.load(f)
@@ -270,7 +203,7 @@ class Parking:
             gen_ID = f"{label}-{i:04d}"
             
             found = False
-            for item in data.get("parking", []):
+            for item in data.get("slots", []):
                 if item.get("id") == gen_ID:
                     found = True
                     break
@@ -281,28 +214,31 @@ class Parking:
         return None
 
     def save(self):
-            #Loadin json file
-        with open("data.json", 'r') as f:
-            data = json.load(f)
-
-        new_parking = {
-            "id":self.__parking_id,
-            "entry_time":self.entry_time, 
-            "exit_time": self.exit_time,
-            "parking_fee": self.parking_fee,
-            "hours_parked": self.calculate_hours(),
-            "date": self.date,
-            "slot_id": self.slot_id
+        #loading the json
+        with open("data.json", 'r')as f:
+            data = json.load(f)    
+    
+        new_slot = {
+            "id":self.__slot_id,
+            "status":self.status,
+            "car":self.car.get_plate_no(),
+            "section id":self.section.get_section_id(),
+            "parking area":self.parking_area.parking_area_id
         }
-        data["parking"].append(new_parking)
-
-        #saving to json
-        with open("data.json", 'w') as f:
+        data["slots"].append(new_slot)
+    
+        #saving to the json
+        with open("data.json", 'w')as f:
             json.dump(data, f, indent = 4)
-       
-    def calculate_hours(self):
-        self.__hours = self.exit_time - self.entry_time
-        return self.__hours
+
+    def get_slot_id(self):
+        return self.__slot_id
+
+    def search_slot(self):
+        pass
+
+    def update_status(self):
+        pass
 
 class ParkingCard:
     def __init__(self, issue_date, expiry_date, car, customer):
@@ -343,11 +279,11 @@ class ParkingCard:
             data = json.load(f)
 
         new_parking_card = {
-            "id": self.__card_id,
-            "customer_id": self.customer,
+            "plate_no":self.car.get_plate_no(),
+            "car":self.car.get_plate_no(),
+            "customer_id": self.customer.get_customer_id(),
             "issue_date": self.issue_date,
             "expiry_date": self.expiry_date,
-            "plate_no":self.car
         }
         data["card"].append(new_parking_card)
 
@@ -360,6 +296,75 @@ class ParkingCard:
 
     def renew_card(self):
         pass
+
+class Parking:
+    def __init__(self, entry_time, exit_time, date, car, slot, card, section, parking_area):
+        self.__parking_id = self.auto_id()
+        self.entry_time = entry_time
+        self.exit_time = exit_time
+        self.date = date
+        self.car = car
+        self.slot = slot
+        self.card = card
+        self.section = section
+        self.parking_area = parking_area
+        self.__hours_parked = self.calculate_hours()
+
+
+    def get_parking_id(self):
+        return self.__parking_id
+
+    def __str__(self):
+        return f"{'*'*50}\n\t\tPARKING TICKET\n{'*'*50}\n parking area ==> {self.parking_area.location} \n section ==> {self.section.type} \n entry time ==> {self.entry_time} \n exit time ==> {self.exit_time} \n car ==> {self.car.get_plate_no()} {self.car.brand} {self.car.model}  \n slot ==> {self.slot.get_slot_id()} \n hours parked ==> {self.get_hours_parked()}\n{'*'*50}"
+
+    def auto_id(self):
+        label = "PK"
+
+        with open("data.json", 'r') as f:
+            data = json.load(f)
+
+        for i in range(1, 1000):
+            gen_ID = f"{label}-{i:04d}"
+            
+            found = False
+            for item in data.get("parking", []):
+                if item.get("id") == gen_ID:
+                    found = True
+                    break
+            
+            if not found:
+                return gen_ID
+                
+        return None
+
+    def calculate_hours(self):
+        return self.exit_time - self.entry_time
+
+    def get_hours_parked(self):
+        return self.__hours_parked
+
+    def save(self):
+            #Loadin json file
+        with open("data.json", 'r') as f:
+            data = json.load(f)
+
+        new_parking = {
+            "id":self.__parking_id,
+            "entry_time":self.entry_time, 
+            "exit_time": self.exit_time,
+            "car":self.car.get_plate_no(),
+            "slot_id": self.slot.get_slot_id(),
+            "parking_fee": self.section.check_rate(),
+            "hours_parked": self.calculate_hours(),
+            "date": self.date,
+            "parking_area":self.parking_area.parking_area_id,
+            "ticket":card.get_card_id()
+        }
+        data["parking"].append(new_parking)
+
+        #saving to json
+        with open("data.json", 'w') as f:
+            json.dump(data, f, indent = 4)
 
 class Payment:
     def __init__(self, date, section, parking_area, parking):
@@ -405,8 +410,8 @@ class Payment:
             "status": self.status,
             "date": self.date,
             "amount": 0,
-            "hours": self.hours,
-            "section": self.section,
+            "hours": self.parking.get_hours_parked(),
+            "section": self.section.get_section_id(),
             "parking_id": self.parking_area.parking_area_id
         }
         data["payment"].append(new_payment)
@@ -419,11 +424,13 @@ class Payment:
         self._amount = self.section.rate * self.__hours
 
 class CashPayment(Payment):
-    def __init__(self, date, hours, section, parking_area, parking, amount_tendered):
-        super().__init__(date, hours, section, parking_area, parking)
+    def __init__(self, date, section, parking_area, parking, amount_tendered):
+        super().__init__(date, section, parking_area, parking)
         self.amount_tendered = amount_tendered
-        self.__balance = 0
+        self.__balance = self.calculate_balance()
+        self.method = "cash payment"
         self.section = section
+        self.parking = parking
 
     def calculate_balance(self):
         self.__balance = self.amount_tendered - self._amount
@@ -445,17 +452,42 @@ class CashPayment(Payment):
         print(f"Cash payment of {self.amount}\n Change: {self.__balance}")
 
 
+    def save(self):
+        #Loading json file
+            with open("data.json", 'r') as f:
+                data = json.load(f)
+    
+            new_payment = {
+                "id": self.payment_id,
+                "method":  self.method,
+                "status": self.status,
+                "date": self.date,
+                "amount": 0,
+                "hours": self.parking.get_hours_parked(),
+                "section": self.section.get_section_id(),
+                "parking_id": self.parking_area.parking_area_id,
+                "balance": self.__balance
+            }
+            data["payment"].append(new_payment)
+    
+            #saving json file
+            with open("data.json", 'w') as f:
+                json.dump(data, f, indent = 4)      
+
+
 class MobileMoneyPayment(Payment):
-    def __init__(self, date, section, parking_area, parking, phone_number, network):
+    def __init__(self, date, section, parking_area, parking, customer, network):
         super().__init__(date, section, parking_area, parking)
-        self.phone_number = phone_number
         self.network = network
+        self.method = "mobile money pay"
+        self.phone_number = customer.contact
+        self.parking = parking
 
     def receipt_link(self):
         return f"https{self.network}{self.payment_id}"
 
     def display_payment(self):
-        print(f"payment ==> {self.payment_id}\n network ==> {self.network}\n phone number ==> {self.phone_number}")
+        print(f"payment ==> {self.payment_id}\n network ==> {self.network}\n phone number==> {self.phone_number}")
 
 
     def validate_payment(self):
@@ -465,12 +497,46 @@ class MobileMoneyPayment(Payment):
             body = self.phone_number[1:]
             self.phone_number = f"+256 {body[0:3]} {body[3:6]} {body[6:]}"
             valid = True
+            self.status = "paid"
             return valid
-            
-        return valid
+
+#overriding the save method
+    def save(self):
+        #Loading json file
+            with open("data.json", 'r') as f:
+                data = json.load(f)
+    
+            new_payment = {
+                "id": self.payment_id,
+                "method":self.method,
+                "status": self.status,
+                "date": self.date,
+                "amount": 0,
+                "hours": self.parking.get_hours_parked(),
+                "section": self.section.get_section_id(),
+                "parking_id": self.parking_area.parking_area_id
+            }
+            data["payment"].append(new_payment)
+    
+            #saving json file
+            with open("data.json", 'w') as f:
+                json.dump(data, f, indent = 4)      
         
 
-m1 = MobileMoneyPayment("2000-1-1",6,"sec","p1","0700111222","airtel")
-m1.display_payment()
-print(m1.validate_payment())
-
+p1= ParkingArea("center")
+s1=Section(p1,"free","vip")
+cu1=Customer("ben","min","0700111222")
+car=Car("uet647","toyota","wish",cu1)
+sl=Slot("free",p1,s1,car)
+card=ParkingCard("2001-1-1","2020-1-1",car,cu1)
+ticket=Parking(4,5,"2004-4-4",car,sl,card,s1,p1)
+pay=CashPayment("2003-6-6",s1,p1,ticket,90000)
+p1.save()
+s1.save()
+cu1.save()
+car.save()
+sl.save()
+card.save()
+ticket.save()
+pay.save()
+print(ticket)
