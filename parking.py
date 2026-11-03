@@ -356,9 +356,9 @@ class Parking:
             "slot_id": self.slot.get_slot_id(),
             "parking_fee": self.section.check_rate(),
             "hours_parked": self.calculate_hours(),
-            "date": self.date,
+            "date": str(self.date),
             "parking_area":self.parking_area.parking_area_id,
-            "ticket":card.get_card_id()
+            "ticket":self.card.get_card_id()
         }
         data["parking"].append(new_parking)
 
@@ -420,8 +420,8 @@ class Payment:
         with open("data.json", 'w') as f:
             json.dump(data, f, indent = 4)       
     
-    def calculate_amount(self,):
-        self._amount = self.section.rate * self.__hours
+    def calculate_amount(self):
+        self._amount = self.section.check_rate() * self.parking.get_hours_parked()
 
 class CashPayment(Payment):
     def __init__(self, date, section, parking_area, parking, amount_tendered):
@@ -461,7 +461,7 @@ class CashPayment(Payment):
                 "id": self.payment_id,
                 "method":  self.method,
                 "status": self.status,
-                "date": self.date,
+                "date": str(self.date),
                 "amount": 0,
                 "hours": self.parking.get_hours_parked(),
                 "section": self.section.get_section_id(),
@@ -498,7 +498,7 @@ class MobileMoneyPayment(Payment):
             self.phone_number = f"+256 {body[0:3]} {body[3:6]} {body[6:]}"
             valid = True
             self.status = "paid"
-            return valid
+        return valid
 
 #overriding the save method
     def save(self):
@@ -510,7 +510,7 @@ class MobileMoneyPayment(Payment):
                 "id": self.payment_id,
                 "method":self.method,
                 "status": self.status,
-                "date": self.date,
+                "date": str(self.date),
                 "amount": 0,
                 "hours": self.parking.get_hours_parked(),
                 "section": self.section.get_section_id(),
@@ -523,20 +523,20 @@ class MobileMoneyPayment(Payment):
                 json.dump(data, f, indent = 4)      
         
 
-p1= ParkingArea("center")
-s1=Section(p1,"free","vip")
-cu1=Customer("ben","min","0700111222")
-car=Car("uet647","toyota","wish",cu1)
-sl=Slot("free",p1,s1,car)
-card=ParkingCard("2001-1-1","2020-1-1",car,cu1)
-ticket=Parking(4,5,"2004-4-4",car,sl,card,s1,p1)
-pay=CashPayment("2003-6-6",s1,p1,ticket,90000)
-p1.save()
-s1.save()
-cu1.save()
-car.save()
-sl.save()
-card.save()
-ticket.save()
-pay.save()
-print(ticket)
+# p1= ParkingArea("center")
+# s1=Section(p1,"free","vip")
+# cu1=Customer("ben","min","0700111222")
+# car=Car("uet647","toyota","wish",cu1)
+# sl=Slot("free",p1,s1,car)
+# card=ParkingCard("2001-1-1","2020-1-1",car,cu1)
+# ticket=Parking(4,5,"2004-4-4",car,sl,card,s1,p1)
+# pay=CashPayment("2003-6-6",s1,p1,ticket,90000)
+# p1.save()
+# s1.save()
+# cu1.save()
+# car.save()
+# sl.save()
+# card.save()
+# ticket.save()
+# pay.save()
+# print(ticket)
