@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>car page</title>
+</head>
+<body>
+    <h1>WELCOME TO THE CAR PAGE</h1>
+    <h2>Fill in the details: </h2>
+
+    <!-- Fixed: Added method="POST" -->
+    <form method="POST">
+        <label for="car_palte_number">car_palte_number: </label>
+        <input type="text" name="car_palte_number" placeholder="car_palte_number" required>
+
+        <label for="brand">brand: </label>
+        <input type="text" name="brand" placeholder="brand" required>
+
+        <label for="model">model: </label>
+        <input type="text" name="model" placeholder="model" required><br><br>
+
+        <label for="customer">customer: </label>
+        <input type="text" name="customer" placeholder="customer" required><br><br>
+
+        <button type="submit">save</button>
+    </form><br>
+
+    <a href="{{url_for('home')}}"><button>back to home</button></a><br><br>
+
+        <table>
+            <tr>
+                <th>car_palte_number</th>
+                <th>brand</th>
+                <th>model</th>
+                <td>Customer_ID</td>
+            </tr>
+            <!-- Fixed: Loop through customer_list directly -->
+            {% for car in cars %}
+            <tr>
+                <td>{{car.car_palte_number}}</td>
+                <td>{{ car.brand }}</td>
+                <td>{{ car.model }}</td> <!-- Fixed: Added customer. prefix -->
+                <td>{{ car.customer.id }}</td>     <!-- Fixed: Added customer. prefix -->
+            </tr>
+            {% endfor %}
+        </table>
+</body>
+</html>

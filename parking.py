@@ -1,4 +1,5 @@
 import json
+from abc import ABC, abstractmethod
 
 class ParkingArea:
     def __init__ (self, location):
@@ -186,12 +187,10 @@ class Car:
             json.dump(data, f, indent = 4)
 
 class Slot:
-    def __init__(self, status, parking_area, section, car):
+    def __init__(self, status, section):
         self.__slot_id = self.auto_id()
         self.status = status
-        self.parking_area = parking_area
         self.section = section
-        self.car = car
 
     def auto_id(self):
         label = "SL"
@@ -221,9 +220,7 @@ class Slot:
         new_slot = {
             "id":self.__slot_id,
             "status":self.status,
-            "car":self.car.get_plate_no(),
-            "section id":self.section.get_section_id(),
-            "parking area":self.parking_area.parking_area_id
+            "section id":self.section.get_section_id()
         }
         data["slots"].append(new_slot)
     
@@ -357,8 +354,7 @@ class Parking:
             "parking_fee": self.section.check_rate(),
             "hours_parked": self.calculate_hours(),
             "date": str(self.date),
-            "parking_area":self.parking_area.parking_area_id,
-            "ticket":self.card.get_card_id()
+            "parking_area":self.parking_area.parking_area_id
         }
         data["parking"].append(new_parking)
 
@@ -366,13 +362,12 @@ class Parking:
         with open("data.json", 'w') as f:
             json.dump(data, f, indent = 4)
 
-class Payment:
-    def __init__(self, date, section, parking_area, parking):
+class Payment(ABC):
+    def __init__(self, date, method, parking):
         self.payment_id = self.auto_id()
         self.date = date
         self.parking = parking
-        self.section = section
-        self.parking_area = parking_area
+        self.method = method
         self.status = "pending"
         self._amount = 0
 
@@ -411,26 +406,27 @@ class Payment:
             "date": self.date,
             "amount": 0,
             "hours": self.parking.get_hours_parked(),
-            "section": self.section.get_section_id(),
-            "parking_id": self.parking_area.parking_area_id
+            "parking":self.parking.get_parking_id()
         }
         data["payment"].append(new_payment)
 
         #saving json file
         with open("data.json", 'w') as f:
             json.dump(data, f, indent = 4)       
-    
+
+   #section component removed 
     def calculate_amount(self):
         self._amount = self.section.check_rate() * self.parking.get_hours_parked()
 
+    @abstractmethod
+    def validate_payment(self):
+        pass
+
 class CashPayment(Payment):
-    def __init__(self, date, section, parking_area, parking, amount_tendered):
-        super().__init__(date, section, parking_area, parking)
+    def __init__(self, date, method, parking, amount_tendered):
+        super().__init__(date, method, parking)
         self.amount_tendered = amount_tendered
         self.__balance = self.calculate_balance()
-        self.method = "cash payment"
-        self.section = section
-        self.parking = parking
 
     def calculate_balance(self):
         self.__balance = self.amount_tendered - self._amount
@@ -474,21 +470,15 @@ class CashPayment(Payment):
             with open("data.json", 'w') as f:
                 json.dump(data, f, indent = 4)      
 
-
 class MobileMoneyPayment(Payment):
-    def __init__(self, date, section, parking_area, parking, customer, network):
-        super().__init__(date, section, parking_area, parking)
+    def __init__(self, date, method, parking, network, phone_number, transaction_id):
+        super().__init__(date, method, parking)
         self.network = network
-        self.method = "mobile money pay"
-        self.phone_number = customer.contact
-        self.parking = parking
-
-    def receipt_link(self):
-        return f"https{self.network}{self.payment_id}"
+        self.phone_number = phone_number
+        self.transaction_id = transaction_id
 
     def display_payment(self):
         print(f"payment ==> {self.payment_id}\n network ==> {self.network}\n phone number==> {self.phone_number}")
-
 
     def validate_payment(self):
         valid  = False
@@ -513,8 +503,7 @@ class MobileMoneyPayment(Payment):
                 "date": str(self.date),
                 "amount": 0,
                 "hours": self.parking.get_hours_parked(),
-                "section": self.section.get_section_id(),
-                "parking_id": self.parking_area.parking_area_id
+                "parking":self.parking.get_parking_id()
             }
             data["payment"].append(new_payment)
     
@@ -530,7 +519,7 @@ class MobileMoneyPayment(Payment):
 # sl=Slot("free",p1,s1,car)
 # card=ParkingCard("2001-1-1","2020-1-1",car,cu1)
 # ticket=Parking(4,5,"2004-4-4",car,sl,card,s1,p1)
-# pay=CashPayment("2003-6-6",s1,p1,ticket,90000)
+#pay=CashPayment("2003-6-6",)
 # p1.save()
 # s1.save()
 # cu1.save()

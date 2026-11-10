@@ -1,112 +1,81 @@
-from parking import Car, ParkingArea, Customer, Parking, Slot, Section, Payment, ParkingCard,Ordinary,VIP
+from parking import Car, ParkingArea, Customer, Parking, Slot, Section, Payment, ParkingCard,CashPayment,MobileMoneyPayment
+from datetime import datetime, date
 
-#function handling the parking section
-def parking_area_details():
-    print("\tEntering parking area details.....")
-
-    number_of_slots = input("Enter number_of_slots: ")
-    location = input("Enter location: ")
-
-    parking_area = ParkingArea(number_of_slots, location)
+def parking_system():
+    print(f"{'='*4} PARKING MANAGEMENT SYSTEM {'='*5}")
+    
+    #Parking Area Details
+    location = input("Enter parking area location: ")
+    parking_area = ParkingArea(location)
     parking_area.save()
-        
-#captures car details
-def car_details():
-    plate_number = input("Enter plate number: ")
-    brand = input("Enter brand: ")
-    model = input("Enter model: ")
 
-    vehicle = Car(plate_number, brand, model)
-    vehicle.save()
-
-#handling section details
-def section_details():
-    print("\tEntering section details.....")
-    parking_area_id = input("Enter parking area: ")
-    status = input("enter status: ")
-
-    section = Section(parking_area_id, status)
+    #Section Details
+    status = input("Enter section status (e.g., free/occupied): ")
+    section_type = input("Enter section type (vip/ordinary): ")
+    section = Section(parking_area, status, section_type)
     section.save()
-        
-#handling slot details
-def slot_details():
-    label = 'SL'
-    print("\tEntering slot details.....")
-    
-    status = input("Enter status: ")
-    section_id = input("Enter section id: ")
 
-    slot = Slot(status, section_id)
-    slot.save()
-
-#handling customer details
-def customer_details():
-    print("\tEntering customer details.....")
-    
-    first_name = input("Enter customer first_name: ")
+    #Customer Details
+    first_name = input("Enter customer first name: ")
     last_name = input("Enter customer last name: ")
-
-    customer = Customer(first_name, last_name)
+    contact = input("Enter customer contact (e.g., 0700111222): ")
+    customer = Customer(first_name, last_name, contact)
     customer.save()
 
-# handling Parking card details
-def card_details():
-    print("\tEntering parking card details.....")
+    #Car Details (Composes Customer)
+    plate = input("Enter car plate number: ")
+    brand = input("Enter car brand: ")
+    model = input("Enter car model: ")
+    car = Car(plate, brand, model, customer)
+    car.save()
 
-    customer_id = input("Enter customer_id: ")     
-    issue_date = input("Enter issue_date: ")
-    expiry_date = input("Enter expiry_date: ")
-    plate_no = input("Enter plate_no: ")
+    # 5. Slot Details (Composed with Area, Section, and Car)
+    slot_status = input("Enter slot status: ")
+    slot = Slot(slot_status, section)
+    slot.save()
+    print(f"Slot created with ID: {slot.get_slot_id()}")
 
-    parking_card = ParkingCard(customer_id, issue_date, expiry_date, plate_no)
-    parking_card.save()
+    #Parking Card Details (Composes Car and Customer)
+    issue_date = input("Enter card issue date (YYYY-MM-DD): ")
+    expiry_date = input("Enter card expiry date (YYYY-MM-DD): ")
+    card = ParkingCard(issue_date, expiry_date, car, customer)
+    card.save()
 
-#Handling Parking Details
-def parking():
-    print("\tEntering Parking Details.....")
+    #Parking Ticket Details (Composes all previous objects)
+    entry_time = int(input("Enter entry time (hour as integer): "))
+    exit_time = int(input("Enter exit time (hour as integer): "))
+    today  = date.today()
+    ticket = Parking(entry_time, exit_time, today, car, slot, card, section, parking_area)
+    ticket.save()
+    
+    #Display the ticket
+    print("\n" + str(ticket))
 
-    entry_time = int(input("Enter entry_time: "))
-    exit_time = int(input("Enter exit_time: "))
-    parking_fee = input("Enter parking_fee: ")
-    date = int(input("Enter date: "))
-    slot_id = input("Enter slot_id: ")
-    card_id = input("Enter card id: ")
+    #Payment Details (Cash or Mobile Money)
+    pay_choice = input("Select payment method (1. Cash / 2. Mobile Money): ")
+    pay_date = date.today()
 
+    if pay_choice == '1':
+        amount_tendered = int(input("Enter amount tendered: "))
+        payment = CashPayment(pay_date, section, parking_area, ticket, amount_tendered)
+        payment.validate_payment()
+        payment.save()
+        payment.display_payment()
 
-    parking = Parking(entry_time, exit_time, parking_fee, date, slot_id, card_id)
-    parking.save()
+    elif pay_choice == '2':
+        network = input("Enter mobile network (e.g., airtel / mtn): ")
+        phone_number = input("Enter phone number: ")
+        transaction_id = input("Enter transaction id")
+        payment = MobileMoneyPayment(pay_date, pay_choice, ticket, network, phone_number, transaction_id)
 
-#Handling Payment details
-def payment_details():
-    print("\tEntering Payment Details")
-
-    status = input("Enter status: ")
-    date = input("Enter date: ")
-    hours = input("Enter hours: ")
-    section = input("Enter section: ")
-    parking_id = input("Enter parking id: ")
-
-    payment = Payment(status, date, hours, section, parking_id)
-    payment.save()
-
-#the first to run
-def main():
-    print("Welcome....\n\t 1. Ordinary ==> 5000 \n\t 2. VIP ==> 10000")
-    parking_type = input("enter parking type: ")
-    if parking_type == '1':
-        car_details()
-    elif parking_type == '2':
-        car_details()
+        if payment.validate_payment():
+            print("Phone number validated successfully!")
+        else:
+            print("Invalid phone format")
+        payment.save()
+        payment.display_payment()
     else:
-        print("INVALID OPTION SELECT 1 / 2")
+        print("Invalid payment option selected.")
 
 
-#calling the functions
-main()
-parking_area_details()
-section_details()
-slot_details()
-customer_details()
-card_details()
-parking()
-payment_details()
+parking_system()
