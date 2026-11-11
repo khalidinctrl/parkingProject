@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Area Page</title>
+</head>
+<body>
+    <h1>WELCOME TO THE PARKING AREA PAGE</h1>
+    <h2>Fill in the details: </h2>
+
+    <form method="POST">
+        <label for="location">Location: </label>
+        <input type="text" name="location" placeholder="location" required><br><br>
+
+        <button type="submit">save</button>
+    </form><br>
+
+    <a href="{{ url_for('home') }}"><button>back to home</button></a><br><br>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Number of Slots</th>
+            <th>Location</th>
+        </tr>
+        {% for i in parking_area_list %}
+        <tr>
+            <td>{{ i.id }}</td>
+            <td>{{ i['number of slots'] }}</td>
+            <td>{{ i.location }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

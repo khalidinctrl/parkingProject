@@ -9,7 +9,7 @@
     <h1>WELCOME TO THE CUSTOMER PAGE</h1>
     <h2>Fill in the details: </h2>
 
-    <!-- Fixed: Added method="POST" -->
+    
     <form method="POST">
         <label for="first name">First name: </label>
         <input type="text" name="first name" placeholder="first name" required>
@@ -27,18 +27,18 @@
 
         <table>
             <tr>
-                <td>ID</td>
+                <th>ID</th>
                 <th>First name</th>
                 <th>Last name</th>
                 <th>Contact</th>
             </tr>
-            <!-- Fixed: Loop through customer_list directly -->
+            
             {% for customer in customer_list %}
             <tr>
                 <td>{{customer.id}}</td>
                 <td>{{ customer.first_name }}</td>
-                <td>{{ customer.last_name }}</td> <!-- Fixed: Added customer. prefix -->
-                <td>{{ customer.contact }}</td>     <!-- Fixed: Added customer. prefix -->
+                <td>{{ customer.last_name }}</td> 
+                <td>{{ customer.contact }}</td>     
             </tr>
             {% endfor %}
         </table>

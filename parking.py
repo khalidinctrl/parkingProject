@@ -510,22 +510,3 @@ class MobileMoneyPayment(Payment):
             #saving json file
             with open("data.json", 'w') as f:
                 json.dump(data, f, indent = 4)      
-        
-
-# p1= ParkingArea("center")
-# s1=Section(p1,"free","vip")
-# cu1=Customer("ben","min","0700111222")
-# car=Car("uet647","toyota","wish",cu1)
-# sl=Slot("free",p1,s1,car)
-# card=ParkingCard("2001-1-1","2020-1-1",car,cu1)
-# ticket=Parking(4,5,"2004-4-4",car,sl,card,s1,p1)
-#pay=CashPayment("2003-6-6",)
-# p1.save()
-# s1.save()
-# cu1.save()
-# car.save()
-# sl.save()
-# card.save()
-# ticket.save()
-# pay.save()
-# print(ticket)

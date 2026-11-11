@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>section page</title>
+</head>
+<body>
+    <h1>WELCOME TO THE SECTION PAGE</h1>
+    <h2>Fill in the details: </h2>
+
+    <form method="POST">
+        <label for="parking area id">Parking area ID: </label>
+        <input type="text" name="parking area id" placeholder="parking area id" required>
+
+        <label for="status">Status: </label>
+        <input type="text" name="status" placeholder="free / occupied" required>
+
+        <label for="type">Type: </label>
+        <input type="text" name="type" placeholder="vip / ordinary" required><br><br>
+
+        <button type="submit">save</button>
+    </form><br>
+
+    <a href="{{url_for('home')}}"><button>back to home</button></a><br><br>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Parking area</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Capacity</th>
+            </tr>
+            {% for part in section_list %}
+            <tr>
+                <td>{{ part.id }}</td>
+                <td>{{ part.parking_area }}</td>
+                <td>{{ part.status }}</td>
+                <td>{{ part.type }}</td>
+                <td>{{ part.capacity }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</body>
+</html>

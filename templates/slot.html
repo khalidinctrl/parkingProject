@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>slot page</title>
+</head>
+<body>
+    <h1>WELCOME TO THE SLOT PAGE</h1>
+    <h2>Fill in the details: </h2>
+
+    <form method="POST">
+        <label for="status">Status: </label>
+        <input type="text" name="status" placeholder="status" required>
+
+        <label for="section id">Section ID: </label>
+        <input type="text" name="section id" placeholder="section id" required><br><br>
+
+        <button type="submit">save</button>
+    </form><br>
+
+    <a href="{{url_for('home')}}"><button>back to home</button></a><br><br>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Status</th>
+                <th>Section ID</th>
+            </tr>
+            {% for slot in slot_list %}
+            <tr>
+                <td>{{ slot.id }}</td>
+                <td>{{ slot.status }}</td>
+                <td>{{ slot['section id'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</body>
+</html>

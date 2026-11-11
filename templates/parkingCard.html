@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>parking card page</title>
+</head>
+<body>
+    <h1>WELCOME TO THE PARKING CARD PAGE</h1>
+    <h2>Fill in the details: </h2>
+
+    <form method="POST">
+        <label for="issue date">Issue date: </label>
+        <input type="text" name="issue date" placeholder="YYYY-MM-DD" required>
+
+        <label for="expiry date">Expiry date: </label>
+        <input type="text" name="expiry date" placeholder="YYYY-MM-DD" required>
+
+        <label for="car plate number">Car plate number: </label>
+        <input type="text" name="car plate number" placeholder="car plate number" required><br><br>
+
+        <label for="customer id">Customer ID: </label>
+        <input type="text" name="customer id" placeholder="customer id" required><br><br>
+
+        <button type="submit">save</button>
+    </form><br>
+
+    <a href="{{url_for('home')}}"><button>back to home</button></a><br><br>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Car</th>
+                <th>Customer ID</th>
+                <th>Issue date</th>
+                <th>Expiry date</th>
+            </tr>
+            {% for pass_card in card_list %}
+            <tr>
+                <td>{{ pass_card.id }}</td>
+                <td>{{ pass_card.car }}</td>
+                <td>{{ pass_card.customer_id }}</td>
+                <td>{{ pass_card.issue_date }}</td>
+                <td>{{ pass_card.expiry_date }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</body>
+</html>

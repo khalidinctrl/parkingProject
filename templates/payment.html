@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>payment page</title>
+</head>
+<body>
+    <h1>WELCOME TO THE PAYMENT PAGE</h1>
+    <h2>Fill in the details: </h2>
+
+    <form method="POST">
+        <label for="date">Date: </label>
+        <input type="text" name="date" placeholder="YYYY-MM-DD" required><br><br>
+
+        <label for="method">Method: </label>
+        <input type="text" name="method" placeholder="cash / mobile money" required><br><br>
+
+        <label for="parking id">Parking ID: </label>
+        <input type="text" name="parking id" placeholder="parking id" required><br><br>
+
+        <label for="amount tendered">Amount tendered (cash): </label>
+        <input type="text" name="amount tendered" placeholder="amount tendered"><br><br>
+
+        <label for="network">Network (mobile money): </label>
+        <input type="text" name="network" placeholder="airtel / mtn"><br><br>
+
+        <label for="phone number">Phone number (mobile money): </label>
+        <input type="text" name="phone number" placeholder="phone number"><br><br>
+
+        <label for="transaction id">Transaction ID (mobile money): </label>
+        <input type="text" name="transaction id" placeholder="transaction id"><br><br>
+
+        <button type="submit">save</button>
+    </form><br>
+
+    <a href="{{url_for('home')}}"><button>back to home</button></a><br><br>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Method</th>
+                <th>Parking ID</th>
+                <th>Status</th>
+                <th>Amount tendered</th>
+                <th>Network</th>
+                <th>Phone number</th>
+                <th>Transaction ID</th>
+            </tr>
+            {% for pay in payment_list %}
+            <tr>
+                <td>{{ pay.id }}</td>
+                <td>{{ pay.date }}</td>
+                <td>{{ pay.method }}</td>
+                <td>{{ pay.parking }}</td>
+                <td>{{ pay.status }}</td>
+                <td>{{ pay.amount_tendered }}</td>
+                <td>{{ pay.network }}</td>
+                <td>{{ pay.phone_number }}</td>
+                <td>{{ pay.transaction_id }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+</body>
+</html>
